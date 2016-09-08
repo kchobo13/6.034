@@ -1,0 +1,87 @@
+#### Bonus tests for minimax_search_alphabeta ##############################
+# To run these tests, copy them into the bottom of your tests.py file.
+
+
+PRUNING_TREE = ToyTree()
+PRUNING_TREE.sub('A',10).sub()
+PRUNING_TREE.down().right().sub('B',20).sub()
+PRUNING_TREE.down().right().down().right().sub('C',1).sub()
+PRUNING_TREE.down().right().down().right().down().right().sub('D',4).sub('X',2)
+
+PRUNING_GAME = AbstractGameState(PRUNING_TREE,
+                          toytree_is_game_over,
+                          toytree_generate_next_states,
+                          toytree_endgame_score_fn)
+
+def alphabeta_4_getargs() :  #TEST 38
+    return [PRUNING_GAME, -INF, INF, toytree_heuristic_fn, INF, True]
+
+def alphabeta_4_testanswer(val, original_val = None) :
+    return (is_dfs_return_type(val)
+            and move_sequence(PRUNING_GAME, [0]) == val[0]
+            and (val[1],val[2]) == (10,4))
+
+make_test(type = 'FUNCTION_ENCODED_ARGS',
+          getargs = alphabeta_4_getargs,
+          testanswer = alphabeta_4_testanswer,
+          expected_val = ("((list of two AbstractGameState instances), 10, 4) "
+                          +"(Hint: If you get 5 evaluations instead of 4, check "
+                          +"your pruning condition, and check how your alpha "
+                          +"and beta values get passed up and down the tree.)"),
+          name = 'minimax_search_alphabeta')
+
+
+PRUNING_TREE_NEG = ToyTree()
+PRUNING_TREE_NEG.sub('A',-10).sub()
+PRUNING_TREE_NEG.down().right().sub('B',-20).sub()
+PRUNING_TREE_NEG.down().right().down().right().sub('C',-1).sub()
+PRUNING_TREE_NEG.down().right().down().right().down().right().sub('D',-4).sub('X',-2)
+
+PRUNING_GAME_NEG = AbstractGameState(PRUNING_TREE_NEG,
+                          toytree_is_game_over,
+                          toytree_generate_next_states,
+                          toytree_endgame_score_fn)
+
+def alphabeta_5_getargs() :  #TEST 39
+    return [PRUNING_GAME_NEG, -INF, INF, toytree_heuristic_fn, INF, False]
+
+def alphabeta_5_testanswer(val, original_val = None) :
+    return (is_dfs_return_type(val)
+            and move_sequence(PRUNING_GAME_NEG, [0]) == val[0]
+            and (val[1],val[2]) == (-10,4))
+
+make_test(type = 'FUNCTION_ENCODED_ARGS',
+          getargs = alphabeta_5_getargs,
+          testanswer = alphabeta_5_testanswer,
+          expected_val = ("((list of two AbstractGameState instances), -10, 4) "
+                          +"(Hint: If you get 5 evaluations instead of 4, check "
+                          +"your pruning condition, and check how your alpha "
+                          +"and beta values get passed up and down the tree.)"),
+          name = 'minimax_search_alphabeta')
+
+
+NEGATE_TREE = ToyTree()
+NEGATE_TREE.sub('P',4).sub('Q',5)
+
+NEGATE_GAME_endgame_score_fn = lambda tree, is_max: [-1,1][is_max] * tree.score
+NEGATE_GAME = AbstractGameState(NEGATE_TREE,
+                          toytree_is_game_over,
+                          toytree_generate_next_states,
+                          NEGATE_GAME_endgame_score_fn)
+
+def alphabeta_6_getargs() :  #TEST 40
+    return [NEGATE_GAME, -INF, INF, toytree_heuristic_fn, INF, True]
+
+def alphabeta_6_testanswer(val, original_val = None) :
+    return (is_dfs_return_type(val)
+            and move_sequence(NEGATE_GAME, [0]) == val[0]
+            and (val[1],val[2]) == (-4,2))
+
+make_test(type = 'FUNCTION_ENCODED_ARGS',
+          getargs = alphabeta_6_getargs,
+          testanswer = alphabeta_6_testanswer,
+          expected_val = ("((list of two AbstractGameState instances), -4, 2) "
+                          +"(Hint: If you get a score of 5 instead of -4, check "
+                          +"that you're calling state.get_endgame_score with "
+                          +"the 'maximize' argument.)"),
+          name = 'minimax_search_alphabeta')
